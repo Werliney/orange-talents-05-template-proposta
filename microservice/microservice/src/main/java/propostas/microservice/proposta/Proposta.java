@@ -1,10 +1,17 @@
 package propostas.microservice.proposta;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
+import org.springframework.http.HttpStatus;
+import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoRequest;
+import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoResponse;
+import propostas.microservice.analiseFinanceira.AnaliseSolicitacaoClient;
+
+import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,6 +36,8 @@ public class Proposta {
     @NotNull
     @Positive
     private BigDecimal salario;
+    @Enumerated(EnumType.STRING)
+    private StatusProposta statusProposta;
 
     @Deprecated
     public Proposta() {
@@ -64,5 +73,22 @@ public class Proposta {
 
     public BigDecimal getSalario() {
         return salario;
+    }
+
+    public void analiseFinanceira(AnaliseSolicitacaoClient analiseSolicitacaoClient) throws JsonProcessingException {
+        try {
+            AnaliseDeSolicitacaoRequest analiseDeSolicitacaoRequest = new AnaliseDeSolicitacaoRequest(documento, nome, id);
+            AnaliseDeSolicitacaoResponse analiseResponse = analiseSolicitacaoClient.analisar(analiseDeSolicitacaoRequest);
+            if(analiseResponse.getResultadoSolicitacao().equals("SEM_RESTRICAO")) {
+                statusProposta = StatusProposta.ELEGIVEL;
+            }
+        } catch (FeignException e) {
+            AnaliseDeSolicitacaoResponse analiseResponse = new ObjectMapper().readValue(e.contentUTF8(),
+                    AnaliseDeSolicitacaoResponse.class);
+            if (e.status() == HttpStatus.UNPROCESSABLE_ENTITY.value()
+                    && analiseResponse.getResultadoSolicitacao().equals("COM_RESTRICAO")) {
+                statusProposta = StatusProposta.NAO_ELEGIVEL;
+            }
+        }
     }
 }
