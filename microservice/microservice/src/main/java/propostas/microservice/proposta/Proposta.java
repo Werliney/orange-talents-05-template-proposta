@@ -33,13 +33,14 @@ public class Proposta {
     private String nome;
     @NotBlank
     private String endereco;
+    private String numeroCartao;
     @NotNull
     @Positive
     private BigDecimal salario;
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
 
-    @Deprecated
+        @Deprecated
     public Proposta() {
     }
 
@@ -73,6 +74,18 @@ public class Proposta {
 
     public BigDecimal getSalario() {
         return salario;
+    }
+
+    public String getNumeroCartao() {
+        return numeroCartao;
+    }
+
+    public void setNumeroCartao(String numeroCartao) {
+        this.numeroCartao = numeroCartao;
+    }
+
+    public void setStatusProposta(StatusProposta statusProposta) {
+        this.statusProposta = statusProposta;
     }
 
     public void analiseFinanceira(AnaliseSolicitacaoClient analiseSolicitacaoClient) throws JsonProcessingException {

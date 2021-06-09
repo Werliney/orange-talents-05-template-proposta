@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import propostas.microservice.analiseFinanceira.AnaliseSolicitacaoClient;
+import propostas.microservice.associaCartao.AssociaCartao;
+import propostas.microservice.associaCartao.CartoesClient;
 
 import javax.validation.Valid;
 import java.util.Optional;

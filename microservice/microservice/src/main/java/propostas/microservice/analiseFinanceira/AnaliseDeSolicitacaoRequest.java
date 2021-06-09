@@ -13,10 +13,9 @@ public class AnaliseDeSolicitacaoRequest {
     private String documento;
     @NotBlank
     private String nome;
-    @NotNull
     private Long idProposta;
 
-    public AnaliseDeSolicitacaoRequest(@NotBlank String documento, @NotBlank String nome, @NotBlank Long idProposta) {
+    public AnaliseDeSolicitacaoRequest(@NotBlank String documento, @NotBlank String nome, Long idProposta) {
         this.documento = documento;
         this.nome = nome;
         this.idProposta = idProposta;
