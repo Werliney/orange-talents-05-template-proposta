@@ -80,6 +80,10 @@ public class Proposta {
         return numeroCartao;
     }
 
+    public StatusProposta getStatusProposta() {
+        return statusProposta;
+    }
+
     public void setNumeroCartao(String numeroCartao) {
         this.numeroCartao = numeroCartao;
     }

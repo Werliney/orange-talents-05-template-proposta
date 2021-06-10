@@ -34,4 +34,14 @@ public class PropostaController {
         return ResponseEntity.created(uriComponentsBuilder.path("/propostas/{id}").buildAndExpand(propostaDto.getId()).
                 toUri()).body(propostaDto);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalhaProposta(@PathVariable Long id) {
+        Optional<Proposta> proposta = propostaRepository.findById(id);
+
+        if(proposta.isPresent()) {
+            return ResponseEntity.ok().body(new DetalhaPropostaDto(proposta.get()));
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

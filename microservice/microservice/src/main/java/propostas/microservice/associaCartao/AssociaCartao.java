@@ -1,6 +1,8 @@
 package propostas.microservice.associaCartao;
 
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,8 @@ import java.util.List;
 public class AssociaCartao {
 
     private Long idProposta;
+
+    private final Logger logger = LoggerFactory.getLogger(AssociaCartao.class);
 
     @Autowired
     CartoesClient cartoesClient;
@@ -33,8 +37,7 @@ public class AssociaCartao {
                     p.setNumeroCartao(associaCartaoResponse.getId());
                     propostaRepository.save(p);
                 } catch (FeignException e) {
-                        System.out.println("Erro no Serviço");
-                        e.printStackTrace();
+                        logger.info("Não foi possível associar um cartão à proposta com o id={} e documento={}", p.getId(), p.getDocumento());
                 }
         });
     }
