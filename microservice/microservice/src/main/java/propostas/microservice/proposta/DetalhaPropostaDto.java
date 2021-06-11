@@ -19,7 +19,7 @@ public class DetalhaPropostaDto {
         this.nome = proposta.getNome();
         this.salario = proposta.getSalario();
         this.statusProposta = proposta.getStatusProposta();
-        this.numeroCartao = proposta.getNumeroCartao();
+        this.numeroCartao = proposta.getCartao().getId();
     }
 
     public String getDocumento() {

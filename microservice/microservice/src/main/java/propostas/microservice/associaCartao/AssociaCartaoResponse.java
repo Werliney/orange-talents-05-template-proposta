@@ -1,5 +1,7 @@
 package propostas.microservice.associaCartao;
 
+import propostas.microservice.cartao.Cartao;
+
 import javax.validation.constraints.NotBlank;
 
 
@@ -29,5 +31,9 @@ public class AssociaCartaoResponse {
 
     public String getIdProposta() {
         return idProposta;
+    }
+
+    public Cartao converter() {
+        return new Cartao(id, emitidoEm, titular, idProposta);
     }
 }

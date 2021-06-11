@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoRequest;
 import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoResponse;
 import propostas.microservice.analiseFinanceira.AnaliseSolicitacaoClient;
+import propostas.microservice.cartao.Cartao;
 
 import javax.persistence.*;
 import javax.persistence.EnumType;
@@ -33,12 +34,13 @@ public class Proposta {
     private String nome;
     @NotBlank
     private String endereco;
-    private String numeroCartao;
     @NotNull
     @Positive
     private BigDecimal salario;
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
+    @OneToOne
+    private Cartao cartao;
 
         @Deprecated
     public Proposta() {
@@ -76,16 +78,16 @@ public class Proposta {
         return salario;
     }
 
-    public String getNumeroCartao() {
-        return numeroCartao;
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 
     public StatusProposta getStatusProposta() {
         return statusProposta;
-    }
-
-    public void setNumeroCartao(String numeroCartao) {
-        this.numeroCartao = numeroCartao;
     }
 
     public void setStatusProposta(StatusProposta statusProposta) {
