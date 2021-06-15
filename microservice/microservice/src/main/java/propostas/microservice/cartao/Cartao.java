@@ -1,9 +1,6 @@
 package propostas.microservice.cartao;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +14,14 @@ public class Cartao {
     @NotBlank
     private String titular;
     private String idProposta;
+    @Enumerated(EnumType.STRING)
+    private SituacaoCartao situacaoCartao;
 
     @OneToMany(cascade = CascadeType.MERGE)
     private List<Biometria> biometria = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<Bloqueio> bloqueio = new ArrayList<>();
 
     @Deprecated
     public Cartao() {
@@ -40,6 +42,17 @@ public class Cartao {
         this.biometria.add(biometria);
     }
 
+    public void setBloqueio(Bloqueio bloqueio) {
+        this.bloqueio.add(bloqueio);
+    }
+
+    public void setSituacaoCartao(SituacaoCartao situacaoCartao) {
+        this.situacaoCartao = situacaoCartao;
+    }
+
+    public SituacaoCartao getSituacaoCartao() {
+        return situacaoCartao;
+    }
     public String getId() {
         return id;
     }
@@ -58,5 +71,9 @@ public class Cartao {
 
     public String getIdProposta() {
         return idProposta;
+    }
+
+    public List<Bloqueio> getBloqueio() {
+        return bloqueio;
     }
 }
