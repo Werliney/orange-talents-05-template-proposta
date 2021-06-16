@@ -20,8 +20,6 @@ public class Cartao {
     @OneToMany(cascade = CascadeType.MERGE)
     private List<Biometria> biometria = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.MERGE)
-    private List<Bloqueio> bloqueio = new ArrayList<>();
 
     @Deprecated
     public Cartao() {
@@ -42,9 +40,6 @@ public class Cartao {
         this.biometria.add(biometria);
     }
 
-    public void setBloqueio(Bloqueio bloqueio) {
-        this.bloqueio.add(bloqueio);
-    }
 
     public void setSituacaoCartao(SituacaoCartao situacaoCartao) {
         this.situacaoCartao = situacaoCartao;
@@ -73,7 +68,4 @@ public class Cartao {
         return idProposta;
     }
 
-    public List<Bloqueio> getBloqueio() {
-        return bloqueio;
-    }
 }

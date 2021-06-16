@@ -8,4 +8,6 @@ public interface CartoesClient {
 
     @GetMapping
     AssociaCartaoResponse associar(@RequestParam(value = "idProposta") String idProposta);
+    @PostMapping("/{id}/bloqueios")
+    BloqueiaCartaoResponse bloqueia(@PathVariable String id, BloqueiaCartaoRequest request);
 }

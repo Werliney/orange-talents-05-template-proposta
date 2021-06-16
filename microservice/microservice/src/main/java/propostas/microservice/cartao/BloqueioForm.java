@@ -15,7 +15,7 @@ public class BloqueioForm {
         return userAgent;
     }
 
-    public Bloqueio converter(String userAgent, String ipCliente) {
-        return new Bloqueio(ipCliente, userAgent);
+    public Bloqueio converter(String userAgent, String ipCliente, Cartao cartao) {
+        return new Bloqueio(ipCliente, userAgent, cartao);
     }
 }
