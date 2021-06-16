@@ -24,6 +24,8 @@ public class CartaoController {
     @Autowired
     BloqueioRepository bloqueioRepository;
     @Autowired
+    AvisoDeViagemRepository avisoDeViagemRepository;
+    @Autowired
     CartoesClient cartoesClient;
 
     @PostMapping("/biometria/{id}")
@@ -65,6 +67,19 @@ public class CartaoController {
         if (cartao.isPresent() && cartao.get().getSituacaoCartao() == SituacaoCartao.BLOQUEADO) {
             return ResponseEntity.unprocessableEntity().body("Este cartão já está bloquado");
         }
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/avisoViagem")
+    public ResponseEntity cadastraAvisoDeViagem(@PathVariable String id, @Valid @RequestBody AvisoDeViagemForm form, HttpServletRequest request) {
+        Optional<Cartao> cartao = cartaoRepository.findById(id);
+        if (!cartao.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        String userAgent = request.getHeader("User-Agent");
+        String ipCliente = request.getRemoteAddr();
+        AvisoDeViagem avisoDeViagem = form.converter(ipCliente, userAgent, cartao.get());
+        avisoDeViagemRepository.save(avisoDeViagem);
         return ResponseEntity.ok().build();
     }
 }
