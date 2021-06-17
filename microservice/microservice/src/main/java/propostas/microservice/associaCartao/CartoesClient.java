@@ -12,4 +12,6 @@ public interface CartoesClient {
     BloqueiaCartaoResponse bloqueia(@PathVariable String id, BloqueiaCartaoRequest request);
     @PostMapping("/{id}/avisos")
     NotificaAvisoViagemResponse notifica(@PathVariable String id, NotificaAvisoViagemRequest request);
+    @PostMapping("/{id}/carteiras")
+    AssociaCarteiraDigitalResponse associaCarteira(@PathVariable String id, AssociaCarteiraDigitalRequest request);
 }

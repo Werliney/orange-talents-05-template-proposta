@@ -1,5 +1,7 @@
 package propostas.microservice.cartao;
 
+import propostas.microservice.carteira.CarteiraDigital;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class Cartao {
     @OneToMany(cascade = CascadeType.MERGE)
     private List<Biometria> biometria = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cartao")
+    private List<CarteiraDigital> carteiraDigitais = new ArrayList<>();
 
     @Deprecated
     public Cartao() {
@@ -68,4 +72,7 @@ public class Cartao {
         return idProposta;
     }
 
+    public List<CarteiraDigital> getCarteiraDigitais() {
+        return carteiraDigitais;
+    }
 }

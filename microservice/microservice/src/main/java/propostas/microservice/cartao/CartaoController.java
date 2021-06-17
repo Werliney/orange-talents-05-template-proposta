@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import propostas.microservice.associaCartao.*;
+import propostas.microservice.carteira.CarteiraDigital;
+import propostas.microservice.carteira.CarteiraDigitalForm;
+import propostas.microservice.carteira.CarteiraDigitalRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -26,6 +29,8 @@ public class CartaoController {
     BloqueioRepository bloqueioRepository;
     @Autowired
     AvisoDeViagemRepository avisoDeViagemRepository;
+    @Autowired
+    CarteiraDigitalRepository carteiraDigitalRepository;
     @Autowired
     CartoesClient cartoesClient;
 
@@ -96,5 +101,31 @@ public class CartaoController {
             return ResponseEntity.unprocessableEntity().build();
         }
 
+    }
+
+    @PostMapping("/{id}/carteiras")
+    public ResponseEntity associaCarteiraDigital(@PathVariable String id, @Valid @RequestBody CarteiraDigitalForm form, UriComponentsBuilder uriComponentsBuilder) {
+        Optional<Cartao> cartao = cartaoRepository.findById(id);
+        if (!cartao.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        CarteiraDigital carteiraDigital = form.converter(cartao.get());
+        System.out.println(carteiraDigital.getEmail() + carteiraDigital.getCarteira());
+
+        if(carteiraDigital.getCartao().equals(cartao.get())) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
+        try {
+            carteiraDigitalRepository.save(carteiraDigital);
+            AssociaCarteiraDigitalRequest associaCarteiraDigitalRequest = new AssociaCarteiraDigitalRequest(carteiraDigital.getEmail(), carteiraDigital.getCarteira());
+            AssociaCarteiraDigitalResponse response = cartoesClient.associaCarteira(cartao.get().getId(), associaCarteiraDigitalRequest);
+            return ResponseEntity.created(uriComponentsBuilder.path("/cartoes/carteiras/{id}").buildAndExpand(carteiraDigital.getId())
+                    .toUri()).body(carteiraDigital);
+
+        } catch (FeignException e) {
+            return ResponseEntity.unprocessableEntity().body("Feign");
+        }
     }
 }
