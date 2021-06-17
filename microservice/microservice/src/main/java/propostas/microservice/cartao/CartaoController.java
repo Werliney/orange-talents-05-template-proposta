@@ -1,16 +1,17 @@
 package propostas.microservice.cartao;
 
 import feign.FeignException;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-import propostas.microservice.associaCartao.BloqueiaCartaoRequest;
-import propostas.microservice.associaCartao.BloqueiaCartaoResponse;
-import propostas.microservice.associaCartao.CartoesClient;
+import propostas.microservice.associaCartao.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @RestController
@@ -76,10 +77,24 @@ public class CartaoController {
         if (!cartao.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        String userAgent = request.getHeader("User-Agent");
-        String ipCliente = request.getRemoteAddr();
-        AvisoDeViagem avisoDeViagem = form.converter(ipCliente, userAgent, cartao.get());
-        avisoDeViagemRepository.save(avisoDeViagem);
-        return ResponseEntity.ok().build();
+
+        try {
+            String userAgent = request.getHeader("User-Agent");
+            String ipCliente = request.getRemoteAddr();
+            AvisoDeViagem avisoDeViagem = form.converter(ipCliente, userAgent, cartao.get());
+            String destinoViagem = form.getDestinoViagem();
+            String validoAte = form.getDataTerminoDeViagem().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            LocalDate validoAteNormal = form.getDataTerminoDeViagem();
+            System.out.println(destinoViagem);
+            System.out.println(validoAte);
+            System.out.println(validoAteNormal);
+            avisoDeViagemRepository.save(avisoDeViagem);
+            NotificaAvisoViagemRequest notificaAvisoViagemRequest = new NotificaAvisoViagemRequest(destinoViagem, validoAteNormal);
+            NotificaAvisoViagemResponse response = cartoesClient.notifica(cartao.get().getId(), notificaAvisoViagemRequest);
+            return ResponseEntity.ok().build();
+        } catch (FeignException e) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
+
     }
 }

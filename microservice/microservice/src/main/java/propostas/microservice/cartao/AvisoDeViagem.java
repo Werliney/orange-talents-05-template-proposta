@@ -32,4 +32,12 @@ public class AvisoDeViagem {
         this.userAgent = userAgent;
         this.cartao = cartao;
     }
+
+    public String getDestinoViagem() {
+        return destinoViagem;
+    }
+
+    public LocalDate getDataTerminoDeViagem() {
+        return dataTerminoDeViagem;
+    }
 }

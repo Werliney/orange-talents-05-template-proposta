@@ -10,4 +10,6 @@ public interface CartoesClient {
     AssociaCartaoResponse associar(@RequestParam(value = "idProposta") String idProposta);
     @PostMapping("/{id}/bloqueios")
     BloqueiaCartaoResponse bloqueia(@PathVariable String id, BloqueiaCartaoRequest request);
+    @PostMapping("/{id}/avisos")
+    NotificaAvisoViagemResponse notifica(@PathVariable String id, NotificaAvisoViagemRequest request);
 }
