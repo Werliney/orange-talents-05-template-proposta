@@ -1,6 +1,8 @@
 package propostas.microservice.proposta;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/propostas")
 public class PropostaController {
+
+    private final Tracer tracer;
+
+    public PropostaController(Tracer tracer) {
+        this.tracer = tracer;
+    }
 
     @Autowired
     private PropostaRepository propostaRepository;
@@ -31,6 +39,8 @@ public class PropostaController {
         proposta.analiseFinanceira(analiseDeSolicitacaoClient);
         propostaRepository.save(proposta);
         PropostaDto propostaDto = new PropostaDto(proposta);
+        Span activeSpan = tracer.activeSpan();
+        activeSpan.setTag("user.email", propostaDto.getEmail());
         return ResponseEntity.created(uriComponentsBuilder.path("/propostas/{id}").buildAndExpand(propostaDto.getId()).
                 toUri()).body(propostaDto);
     }
