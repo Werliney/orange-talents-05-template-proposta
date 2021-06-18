@@ -113,8 +113,10 @@ public class CartaoController {
         CarteiraDigital carteiraDigital = form.converter(cartao.get());
         System.out.println(carteiraDigital.getEmail() + carteiraDigital.getCarteira());
 
-        if(carteiraDigital.getCartao().equals(cartao.get())) {
-            return ResponseEntity.unprocessableEntity().build();
+        Optional<CarteiraDigital> carteira = carteiraDigitalRepository.findCartaoInCarteira(id, carteiraDigital.getCarteira());
+
+        if(carteira.isPresent()) {
+            return ResponseEntity.unprocessableEntity().body("Já existe essa carteira para esse cartão");
         }
 
         try {
