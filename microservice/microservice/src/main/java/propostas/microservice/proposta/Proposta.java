@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.encrypt.Encryptors;
 import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoRequest;
 import propostas.microservice.analiseFinanceira.AnaliseDeSolicitacaoResponse;
 import propostas.microservice.analiseFinanceira.AnaliseSolicitacaoClient;

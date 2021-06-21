@@ -5,6 +5,8 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import propostas.microservice.analiseFinanceira.AnaliseSolicitacaoClient;
@@ -31,7 +33,9 @@ public class PropostaController {
 
     @PostMapping
     public ResponseEntity criaProposta(@RequestBody @Valid PropostaForm form, UriComponentsBuilder uriComponentsBuilder) throws JsonProcessingException {
-        Optional<Proposta> proposta2 = propostaRepository.findByDocumento(form.getDocumento());
+        TextEncryptor encryptor = Encryptors.queryableText("encryptorSenha", "932653696ae557f8e17f");
+        String documento = encryptor.encrypt(form.getDocumento());
+        Optional<Proposta> proposta2 = propostaRepository.findByDocumento(documento);
         if(proposta2.isPresent()) {
             return ResponseEntity.unprocessableEntity().body("Já existe uma proposta para esse solicitante");
         }

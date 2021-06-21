@@ -1,5 +1,8 @@
 package propostas.microservice.proposta;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
 import propostas.microservice.annotations.CPFOrCNPJ;
 
 import javax.validation.constraints.Email;
@@ -45,6 +48,9 @@ public class PropostaForm {
     }
 
     public Proposta converter() {
-        return new Proposta(documento, email, nome, endereco, salario);
+
+        TextEncryptor encryptor = Encryptors.queryableText("encryptorSenha", "932653696ae557f8e17f");
+
+        return new Proposta(encryptor.encrypt(documento), email, nome, endereco, salario);
     }
 }
